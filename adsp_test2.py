@@ -1,5 +1,9 @@
 import streamlit as st
 
+st.set_page_config(page_title="ADsP 퀴즈", layout="wide")
+
+st.title("ADsP 주차별 문제 풀이")
+
 # -----------------------------
 # 20문제 데이터 (1주차 + 2주차)
 # -----------------------------
@@ -222,7 +226,6 @@ questions = [
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.title("ADsP 주차별 문제 풀이")
 
 # 주차 선택
 weeks = sorted(list(set([q["week"] for q in questions])))
@@ -231,23 +234,30 @@ week_choice = st.selectbox("주차를 선택하세요", weeks)
 # 선택된 주차 문제 필터
 week_questions = [q for q in questions if q["week"] == week_choice]
 
+# 점수 초기화 (세션 상태)
+if "score" not in st.session_state:
+    st.session_state.score = 0
+
 # 문제 출력
 for idx, q in enumerate(week_questions):
     st.subheader(f"{idx+1}. {q['question']}")
     
-    # R 코드 출력
+    # R 코드 블록
     if q.get("code"):
-        st.markdown("```r")
-        st.markdown(q["code"])
-        st.markdown("```")
+        st.code(q["code"], language="r")
     
+    # 사용자 답안
     user_answer = st.radio("정답을 선택하세요", q["options"], key=f"{week_choice}_{idx}")
     
+    # 제출 버튼
     if st.button("제출", key=f"submit_{week_choice}_{idx}"):
         if user_answer == q["options"][q["answer"]]:
             st.success("정답입니다!")
+            st.session_state.score += 1
         else:
             st.error(f"오답입니다. 정답: {q['options'][q['answer']]}")
         st.info(f"해설: {q['explanation']}")
-    st.write("---")
-    st.subheader(f"최종 점수: {score} / {len(week_questions)}")
+    
+# 주차별 점수 출력
+st.subheader(f"현재 점수: {st.session_state.score} / {len(week_questions)}")
+
