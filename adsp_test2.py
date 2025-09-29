@@ -216,6 +216,7 @@ week_questions = [q for q in questions if q["week"] == selected_week]
 user_answers = []
 
 for idx, q in enumerate(week_questions):
+    st.subheader(f"{q['question']}")
     answer = st.radio("선택", q["options"], key=f"{selected_week}_{idx}")
     user_answers.append(answer)
 
