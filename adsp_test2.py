@@ -247,38 +247,22 @@ for idx, q in enumerate(week_questions):
     ans = st.radio("정답을 선택하세요", q["options"], key=f"{week_choice}_{idx}")
     user_answers.append(ans)
 
-# 한 번에 제출
-if st.button("제출"):
+if st.button("✅ 제출하기"):
     score = 0
+    st.write("---")
+    st.header("결과 확인")
+    
     for idx, q in enumerate(week_questions):
-        if user_answers[idx] == q["options"][q["answer"]]:
+        selected = user_answers[idx]
+        correct = q["options"][q["answer"]]
+        
+        if selected == correct:
+            st.success(f"문제 {idx+1}: 정답 ✅ ({selected})")
             score += 1
-    st.session_state.score = score
-    st.success(f"총 점수: {st.session_state.score} / {len(week_questions)}")
-
-    # 해설 출력 (틀린 문제만 빨간색)
-    for idx, q in enumerate(week_questions):
-        if user_answers[idx] == q["options"][q["answer"]]:
-            # 맞은 문제: 기본 색
-            st.info(
-                f"{idx+1}. {q['question']}\n"
-                f"정답: {q['options'][q['answer']]}\n"
-                f"해설: {q['explanation']}"
-            )
         else:
-            # 틀린 문제: 빨간색
-            st.markdown(
-                f"""
-                <div style="
-                    background-color: #ffe5e5;  /* 은은한 빨간색 배경 */
-                    padding: 10px;
-                    border-radius: 5px;
-                    border: 1px solid #ffcccc;
-                    ">
-                    {idx+1}. {q['question']}<br>
-                    <b>정답:</b> {q['options'][q['answer']]}<br>
-                    <b>해설:</b> {q['explanation']}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+            st.error(f"문제 {idx+1}: 오답 ❌ (선택: {selected}, 정답: {correct})")
+        
+        st.caption(f"해설: {q['explanation']}")
+    
+    st.write("---")
+    st.subheader(f"최종 점수: {score} / {len(week_questions)}")
