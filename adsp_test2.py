@@ -241,7 +241,7 @@ if "score" not in st.session_state:
 # 문제 출력 및 답안 저장
 user_answers = []
 for idx, q in enumerate(week_questions):
-    st.subheader(f"{idx+1}. {q['question']}")
+    st.subheader(f"{q['question']}")
     if q.get("code"):
         st.code(q["code"], language="r")
     ans = st.radio("정답을 선택하세요", q["options"], key=f"{week_choice}_{idx}")
