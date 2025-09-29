@@ -234,20 +234,16 @@ week_choice = st.selectbox("주차를 선택하세요", weeks)
 # 선택된 주차 문제 필터
 week_questions = [q for q in questions if q["week"] == week_choice]
 
-# 점수 초기화 (세션 상태)
+# 점수 초기화
 if "score" not in st.session_state:
     st.session_state.score = 0
 
 # 문제 출력 및 답안 저장
 user_answers = []
 for idx, q in enumerate(week_questions):
-    st.subheader(f"{q['question']}")
-    
-    # R 코드 블록
+    st.subheader(f"{idx+1}. {q['question']}")
     if q.get("code"):
         st.code(q["code"], language="r")
-    
-    # 사용자 답안 선택
     ans = st.radio("정답을 선택하세요", q["options"], key=f"{week_choice}_{idx}")
     user_answers.append(ans)
 
@@ -258,14 +254,24 @@ if st.button("제출"):
         if user_answers[idx] == q["options"][q["answer"]]:
             score += 1
     st.session_state.score = score
-    
     st.success(f"총 점수: {st.session_state.score} / {len(week_questions)}")
-    
-    # 해설 출력
-    for idx, q in enumerate(week_questions):
-        st.info(
-            f"{idx+1}. {q['question']}\n"
-            f"정답: {q['options'][q['answer']]}\n"
-            f"해설: {q['explanation']}"
-        )
 
+    # 해설 출력 (틀린 문제만 빨간색)
+    for idx, q in enumerate(week_questions):
+        if user_answers[idx] == q["options"][q["answer"]]:
+            # 맞은 문제: 기본 색
+            st.info(
+                f"{idx+1}. {q['question']}\n"
+                f"정답: {q['options'][q['answer']]}\n"
+                f"해설: {q['explanation']}"
+            )
+        else:
+            # 틀린 문제: 빨간색
+            st.markdown(
+                f"<div style='color:red; border:1px solid #f00; padding:10px; border-radius:5px'>"
+                f"{idx+1}. {q['question']}<br>"
+                f"<b>정답:</b> {q['options'][q['answer']]}<br>"
+                f"<b>해설:</b> {q['explanation']}"
+                f"</div>",
+                unsafe_allow_html=True
+            )
