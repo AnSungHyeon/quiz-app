@@ -229,7 +229,7 @@ questions = [
 
 # 주차 선택
 weeks = sorted(list(set([q["week"] for q in questions])))
-week_choice = st.selectbox("주차를 선택하세요", weeks)
+week_choice = st.sidebar.selectbox("주차를 선택하세요", weeks)
 
 # 선택된 주차 문제 필터
 week_questions = [q for q in questions if q["week"] == week_choice]
