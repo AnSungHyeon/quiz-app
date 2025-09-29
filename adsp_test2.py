@@ -268,10 +268,17 @@ if st.button("제출"):
         else:
             # 틀린 문제: 빨간색
             st.markdown(
-                f"<div style='color:red; border:1px solid #f00; padding:10px; border-radius:5px'>"
-                f"{idx+1}. {q['question']}<br>"
-                f"<b>정답:</b> {q['options'][q['answer']]}<br>"
-                f"<b>해설:</b> {q['explanation']}"
-                f"</div>",
+                f"""
+                <div style="
+                    background-color: #ffe5e5;  /* 은은한 빨간색 배경 */
+                    padding: 10px;
+                    border-radius: 5px;
+                    border: 1px solid #ffcccc;
+                    ">
+                    {idx+1}. {q['question']}<br>
+                    <b>정답:</b> {q['options'][q['answer']]}<br>
+                    <b>해설:</b> {q['explanation']}
+                </div>
+                """,
                 unsafe_allow_html=True
             )
