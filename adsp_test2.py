@@ -238,7 +238,8 @@ week_questions = [q for q in questions if q["week"] == week_choice]
 if "score" not in st.session_state:
     st.session_state.score = 0
 
-# 문제 출력
+# 문제 출력 및 답안 저장
+user_answers = []
 for idx, q in enumerate(week_questions):
     st.subheader(f"{idx+1}. {q['question']}")
     
@@ -246,18 +247,25 @@ for idx, q in enumerate(week_questions):
     if q.get("code"):
         st.code(q["code"], language="r")
     
-    # 사용자 답안
-    user_answer = st.radio("정답을 선택하세요", q["options"], key=f"{week_choice}_{idx}")
+    # 사용자 답안 선택
+    ans = st.radio("정답을 선택하세요", q["options"], key=f"{week_choice}_{idx}")
+    user_answers.append(ans)
+
+# 한 번에 제출
+if st.button("제출"):
+    score = 0
+    for idx, q in enumerate(week_questions):
+        if user_answers[idx] == q["options"][q["answer"]]:
+            score += 1
+    st.session_state.score = score
     
-    # 제출 버튼
-    if st.button("제출", key=f"submit_{week_choice}_{idx}"):
-        if user_answer == q["options"][q["answer"]]:
-            st.success("정답입니다!")
-            st.session_state.score += 1
-        else:
-            st.error(f"오답입니다. 정답: {q['options'][q['answer']]}")
-        st.info(f"해설: {q['explanation']}")
+    st.success(f"총 점수: {st.session_state.score} / {len(week_questions)}")
     
-# 주차별 점수 출력
-st.subheader(f"현재 점수: {st.session_state.score} / {len(week_questions)}")
+    # 해설 출력
+    for idx, q in enumerate(week_questions):
+        st.info(
+            f"{idx+1}. {q['question']}\n"
+            f"정답: {q['options'][q['answer']]}\n"
+            f"해설: {q['explanation']}"
+        )
 
