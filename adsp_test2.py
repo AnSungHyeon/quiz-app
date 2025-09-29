@@ -1,12 +1,10 @@
 import streamlit as st
 
 # -----------------------------
-# 문제, 보기, 정답, 해설 정의
+# 20문제 데이터 (1주차 + 2주차)
 # -----------------------------
 questions = [
-    # -----------------------------
     # 1주차 (10문제)
-    # -----------------------------
     {
         "week": 1,
         "question": "문제 1: 다음 R 코드의 실행 결과로 알맞은 것은?",
@@ -128,9 +126,7 @@ questions = [
         "explanation": "요인은 범주형(categorical) 데이터를 저장하고 levels 속성이 있습니다."
     },
 
-    # -----------------------------
     # 2주차 (10문제)
-    # -----------------------------
     {
         "week": 2,
         "question": "문제 1 – 결측값 확인",
@@ -226,38 +222,32 @@ questions = [
 # -----------------------------
 # Streamlit UI
 # -----------------------------
-st.set_page_config(page_title="주차별 문제 퀴즈", layout="wide")
-st.title("📘 주차별 문제 선택 퀴즈")
-st.write("사이드바에서 주차를 선택하고 문제를 풀어보세요.")
+st.title("ADsP 주차별 문제 풀이")
 
-# 사이드바에서 주차 선택
+# 주차 선택
 weeks = sorted(list(set([q["week"] for q in questions])))
-selected_week = st.sidebar.selectbox("주차 선택", weeks)
+week_choice = st.selectbox("주차를 선택하세요", weeks)
 
-# 선택한 주차 문제 필터링
-week_questions = [q for q in questions if q["week"] == selected_week]
+# 선택된 주차 문제 필터
+week_questions = [q for q in questions if q["week"] == week_choice]
 
-user_answers = []
-
+# 문제 출력
 for idx, q in enumerate(week_questions):
-    st.subheader(f"{q['question']}")
-    answer = st.radio("선택", q["options"], key=f"{selected_week}_{idx}")
-    user_answers.append(answer)
-
-# 제출 버튼
-if st.button("✅ 제출"):
-    score = 0
-    st.write("---")
-    st.header("결과 확인")
+    st.subheader(f"{idx+1}. {q['question']}")
     
-    for idx, q in enumerate(week_questions):
-        correct = q["options"][q["answer"]]
-        if user_answers[idx] == correct:
-            st.success(f"문제 {idx+1}: 정답 ✅")
-            score += 1
+    # R 코드 출력
+    if q.get("code"):
+        st.markdown("```r")
+        st.markdown(q["code"])
+        st.markdown("```")
+    
+    user_answer = st.radio("정답을 선택하세요", q["options"], key=f"{week_choice}_{idx}")
+    
+    if st.button("제출", key=f"submit_{week_choice}_{idx}"):
+        if user_answer == q["options"][q["answer"]]:
+            st.success("정답입니다!")
         else:
-            st.error(f"문제 {idx+1}: 오답 ❌ (정답: {correct})")
-        st.caption(f"해설: {q['explanation']}")
-    
+            st.error(f"오답입니다. 정답: {q['options'][q['answer']]}")
+        st.info(f"해설: {q['explanation']}")
     st.write("---")
     st.subheader(f"최종 점수: {score} / {len(week_questions)}")
