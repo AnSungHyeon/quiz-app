@@ -58,7 +58,7 @@ questions = [
     },
     {
         "week": 1,
-        "question": "문제 5: iris 데이터에서 virginica 종의 Sepal.Width 사분위수를 계산할 때 기대되는 순서는?",
+        "question": "문제 5: 다음 R 코드의 실행 결과로 quantiles 값으로 기대되는 것은?",
         "code": "iris_sub <- iris[iris$Species=='virginica', ]\nquantiles <- quantile(iris_sub$Sepal.Width, probs=c(0.25,0.5,0.75))",
         "options": [
             "0.25 사분위수 < 0.5 중앙값 < 0.75 사분위수 순",
