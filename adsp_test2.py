@@ -241,7 +241,7 @@ if "score" not in st.session_state:
 # 문제 출력 및 답안 저장
 user_answers = []
 for idx, q in enumerate(week_questions):
-    st.subheader(f"{idx+1}. {q['question']}")
+    st.subheader(f"{q['question']}")
     
     # R 코드 블록
     if q.get("code"):
